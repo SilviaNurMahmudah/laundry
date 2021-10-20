@@ -1,3 +1,16 @@
+<?php
+error_reporting(0);
+session_start();
+include "configuration/config_etc.php" ;
+include "configuration/config_include.php" ;
+include 'configuration/config_connect.php';
+$queryback="SELECT * FROM data";
+$resultback=mysqli_query($conn,$queryback);
+$rowback=mysqli_fetch_assoc($resultback);
+$footer=$rowback['nama'];
+connect(); timing();
+?>
+
 <html lang="en">
 <head>
   <title>Aya Laundry</title>
@@ -30,7 +43,7 @@
   
   <div class="container-login100" style="background-image: url('page/images/bg-02.webp');">
     <div class="wrap-login100 p-l-55 p-r-55 p-t-80 p-b-30">
-      <form action="op.php" method="post" class="login100-form validate-form">
+      <form action="log_val.php" method="post" class="login100-form validate-form">
         <span class="login100-form-title p-b-37">
           <b>AYA LAUNDRY</b></a>
         </span>
@@ -62,12 +75,6 @@
             &nbsp;&nbsp;&nbsp;
           </strong>
         </div>
- 
-        <!-- <div class="container-login100-form-btn">
-          <a href="cek" class="login100-form-btn">
-            Cek Status Cucian
-          </a>
-        </div> -->
   
         <div class="text-center p-t-57 p-b-20">
           <span class="login100-form-title p-b-37">
