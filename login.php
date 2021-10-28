@@ -78,7 +78,7 @@ connect(); timing();
   
         <div class="text-center p-t-57 p-b-20">
           <span class="login100-form-title p-b-37">
-            <p class="login-box-msg">by Silvia - Umi<br/>Copyright © 2021 Aya Laundry</p>
+            <!-- <p class="login-box-msg">by Silvia - Umi<br/>Copyright © 2021 Aya Laundry</p>  -->
           </span>
         </div>
 
