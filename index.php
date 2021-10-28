@@ -9,7 +9,7 @@ etc();encryption();session();connect();head();body();timing();
 
 <?php
 if (!login_check()) { ?>
-  <meta http-equiv="refresh" content="0; url=logout" />
+  <meta http-equiv="refresh" content="0; url=logout.php" />
 <?php
   exit(0);
 } ?>
@@ -49,7 +49,7 @@ if (!login_check()) { ?>
       </div>
 
       <?php
-      if($_SESSION['level'] !='admin'){
+      if($_SESSION['level'] == 'kasir' && $_SESSION['level'] != 'kasir'){
 
       }else{ ?>
         <div class="row">

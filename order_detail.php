@@ -11,7 +11,7 @@ pagination();
 <?php
 if (!login_check()) {
   ?>
-  <meta http-equiv="refresh" content="0; url=logout" />
+  <meta http-equiv="refresh" content="0; url=logout.php" />
   <?php
   exit(0);
 }
@@ -110,7 +110,7 @@ if (!login_check()) {
           ?>
           <!-- BOX INFORMASI -->
           <?php
-          if ($_SESSION['level'] == 'admin') {
+          if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') {
           } else {
             ?>
             <div class="callout callout-danger">
@@ -122,7 +122,7 @@ if (!login_check()) {
           ?>
 
           <?php
-          if ($_SESSION['level'] == 'admin') {
+          if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') {
             ?>
 
             <?php

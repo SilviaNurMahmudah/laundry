@@ -11,7 +11,7 @@ pagination();
 <?php
 if (!login_check()) {
   ?>
-  <meta http-equiv="refresh" content="0; url=logout" />
+  <meta http-equiv="refresh" content="0; url=logout.php" />
   <?php
   exit(0);
 }
@@ -81,7 +81,7 @@ if (!login_check()) {
             <?php } ?>
             <!-- BOX INFORMASI -->
             <?php
-            if ($_SESSION['level'] == 'admin') {
+            if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') {
 
             } else { ?>
               <div class="callout callout-danger">
@@ -89,7 +89,7 @@ if (!login_check()) {
                 <b>Hanya user tertentu yang dapat mengakses halaman <?php echo $dataapa;?> ini .</b>
               </div>
             <?php } ?>
-            <?php if ($_SESSION['level'] == 'admin') { ?>
+            <?php if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
               <?php
               $sqla="SELECT no, COUNT( * ) AS totaldata FROM $forward where kode != '1'";
               $hasila=mysqli_query($conn,$sqla);

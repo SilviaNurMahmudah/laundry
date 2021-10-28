@@ -10,7 +10,7 @@ pagination();
 
 <?php
 if (!login_check()) { ?>
-  <meta http-equiv="refresh" content="0; url=logout" />
+  <meta http-equiv="refresh" content="0; url=logout.php" />
   <?php
   exit(0);
 }
@@ -104,7 +104,7 @@ if (!login_check()) { ?>
 
        <!-- BOX INFORMASI -->
        <?php
-       if ($_SESSION['level'] == 'admin') { ?>
+       if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
         <!-- KONTEN BODY AWAL -->
         <div class="box box-default">
           <div class="box-header with-border">
@@ -125,7 +125,7 @@ if (!login_check()) { ?>
               $datatotal = $_POST['datatotal'];
               $insert = '1';
 
-              if(($no != null || $no != "") && ($_SESSION['level'] == 'admin')){
+              if(($no != null || $no != "") && ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
                $sql="select * from $tabeldatabase where kode='$kode'";
                $hasil2 = mysqli_query($conn,$sql);
                while ($fill = mysqli_fetch_assoc($hasil2)){
@@ -172,7 +172,7 @@ if (!login_check()) { ?>
                 if(mysqli_num_rows($result)>0){
                   echo "<script type='text/javascript'>  alert('Layanan sudah diinputkan, silakan hapus dahulu untuk merubah!');</script>";
                 }
-                else if(($_SESSION['level'] == 'admin')&&($jumlah > 0)){
+                else if(($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')&&($jumlah > 0)){
                   $sql2 = "INSERT INTO $tabeldatabase VALUES('$kode','$layanan','$nama','$biaya', '$jumlah','$hargaakhir','$biayaakhir','')";
                   $insertan = mysqli_query($conn, $sql2);
                 }else{
@@ -204,7 +204,7 @@ if (!login_check()) { ?>
 
                 echo "<script type='text/javascript'>  alert('Data tidak bisa diubah!');</script>";
               }
-              else if(($_SESSION['level'] == 'admin')){
+              else if(($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
                $sql2 = "INSERT INTO bayar VALUES('$kode','$tglnota','$jammasuk','$pelanggan','$datatotal','$tgldeadline','$jamdeadline','Diterima','$catatan','')";
                $insertan = mysqli_query($conn, $sql2);
                ?>

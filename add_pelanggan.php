@@ -11,7 +11,7 @@ pagination();
 <?php
 if (!login_check()) {
     ?>
-    <meta http-equiv="refresh" content="0; url=logout" />
+    <meta http-equiv="refresh" content="0; url=logout.php" />
     <?php
     exit(0);
 }
@@ -82,7 +82,7 @@ if (!login_check()) {
 
                     <!-- BOX INFORMASI -->
                     <?php
-                    if ($_SESSION['level'] == 'admin') { ?>
+                    if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
                        <!-- KONTEN BODY AWAL -->
                        <div class="box box-default">
                         <div class="box-header with-border">
@@ -97,7 +97,7 @@ if (!login_check()) {
                             $kode=$nama=$nohp="";
                             $no = $_GET["no"];
                             $insert = '1';  
-                            if(($no != null || $no != "") && ($_SESSION['level'] == 'admin')){
+                            if(($no != null || $no != "") && ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
                              $sql="SELECT * from $tabeldatabase where no='$no'";
                              $hasil2 = mysqli_query($conn,$sql);
                              while ($fill = mysqli_fetch_assoc($hasil2)){
@@ -169,7 +169,7 @@ if (!login_check()) {
                                 echo "<script type='text/javascript'>window.location = '$forwardpage''.php';</script>";
                             }
                         }
-                        else if(($_SESSION['level'] == 'admin')){
+                        else if(($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
                            $sql2 = "INSERT INTO $tabeldatabase VALUES('$kode','$nama','$nohp','')";
                            if(mysqli_query($conn, $sql2)){
                             echo "<script type='text/javascript'>  alert('Berhasil, Data telah disimpan!'); </script>";

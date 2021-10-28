@@ -11,7 +11,7 @@ pagination();
 <?php
 if (!login_check()) {
   ?>
-  <meta http-equiv="refresh" content="0; url=logout" />
+  <meta http-equiv="refresh" content="0; url=logout.php" />
   <?php
   exit(0);
 }
@@ -65,7 +65,7 @@ if (!login_check()) {
           </script>
           <!-- BOX INFORMASI -->
           <?php
-          if ($_SESSION['level'] == 'admin') {
+          if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') {
 
           } else {
             ?>
@@ -75,7 +75,7 @@ if (!login_check()) {
             </div>
           <?php } ?>
           <?php
-          if ($_SESSION['level'] == 'admin') { ?>
+          if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
             <?php
             if($search == null || $search == "" ){
               $sqla="SELECT no, COUNT( * ) AS totaldata FROM $forward";
@@ -128,7 +128,7 @@ if (!login_check()) {
                     <th>Total Pembayaran</th>
                     <th>Deadline</th>
                     <th>Status</th>
-                    <?php	if ($_SESSION['level'] == 'admin') { ?>
+                    <?php	if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
                       <th class="no-print">Opsi</th>
                     <?php }else{
 
@@ -172,7 +172,7 @@ if (!login_check()) {
                               <td> <span class="label label-danger"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
                             <?php } ?>
                             <td>
-                              <?php	if ($_SESSION['level'] == 'admin') { ?>
+                              <?php	if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
                                 <?php if($fill['status']=='proses'){?>
                                   <button type="button" class="btn btn-success btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'selesai'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Selesai</button>
                                 <?php }else if($fill['status']=='selesai'){ ?>
@@ -223,7 +223,7 @@ if (!login_check()) {
                               <td> <span class="label label-danger"><?php  echo mysqli_real_escape_string($conn, $fill['status']); ?></span></td>
                             <?php } ?>
                             <td>
-                              <?php	if ($_SESSION['level'] == 'admin') { ?>
+                              <?php	if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
                                 <?php if($fill['status']=='proses'){?>
                                   <button type="button" class="btn btn-success btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'selesai'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Selesai</button>
                                 <?php }else if($fill['status']=='selesai'){ ?>

@@ -20,18 +20,18 @@ include "configuration/config_chmod.php";
                 <a href="index.php"> <i class="fa fa-dashboard"></i> <span>Dashboard</span> </a>
             </li>
             <?php
-            if($_SESSION['level'] == 'admin'){ ?>                       
+            if($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir'){ ?>                       
             <?php }else{
 
             }
-            if($_SESSION['level'] == 'admin'){ ?>
+            if($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir'){ ?>
                 <li class="treeview">
                     <a href="add_transaksi.php"> <i class="glyphicon glyphicon-shopping-cart"></i> <span>Transaksi</span> <span class="pull-right-container"> </span> </a>
                 </li>
 		    <?php }else{
 
             }
-            if($_SESSION['level'] == 'admin'){ ?>
+            if($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir'){ ?>
                 <li class="treeview">
                     <a href="#"> <i class="glyphicon glyphicon-folder-close"></i> <span>Pelanggan</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i> </span> </a>
 					<ul class="treeview-menu">
@@ -46,7 +46,7 @@ include "configuration/config_chmod.php";
             <?php }else{
 
             }
-            if($_SESSION['level'] == 'admin'){ ?>
+            if($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir'){ ?>
                 <li class="treeview">
                     <a href="#"> <i class="glyphicon glyphicon-inbox"></i> <span>Order</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i> </span> </a>
                     <ul class="treeview-menu">
@@ -92,15 +92,15 @@ include "configuration/config_chmod.php";
 
             }
             
-            if($_SESSION['level'] == 'superadmin'){ ?>
+            if($_SESSION['level'] == 'admin'){ ?>
                 <li class="treeview">
-                    <a href="#"> <i class="glyphicon glyphicon-user"></i> <span>Admin</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i> </span> </a>
+                    <a href="#"> <i class="glyphicon glyphicon-user"></i> <span>User</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i> </span> </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="admin.php"><i class="fa fa-circle-o"></i>Data Admin</a>
+                            <a href="user.php"><i class="fa fa-circle-o"></i>Data User</a>
                         </li>
                         <li>
-                            <a href="add_admin.php"><i class="fa fa-circle-o"></i>Tambah Admin</a>
+                            <a href="add_user.php"><i class="fa fa-circle-o"></i>Tambah User</a>
                         </li>
                     </ul>
                 </li>

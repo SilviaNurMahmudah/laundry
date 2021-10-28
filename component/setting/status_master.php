@@ -9,7 +9,7 @@ $status = $_GET['status'];
 ?>
 
 <?php
-if($_SESSION['level'] =='admin' ){
+if($_SESSION['level'] =='admin' || $_SESSION['level'] == 'kasir'){
 
 $sql = "update $forward set status='$status' where no='".$no."'";
 
@@ -32,7 +32,7 @@ else{
 
  ?>
   <body onload="setTimeout(function() { document.frm1.submit() }, 10)">
-   <form action="<?php echo $baseurl; ?>/<?php echo $forwardpage;?>.php" name="frm1" method="post">
+   <form action="<?php echo $baseurl; ?>/ayalaundry/<?php echo $forwardpage;?>" name="frm1" method="post">
 
 
 	  <input type="hidden" name="hapusberhasil" value="2" />
