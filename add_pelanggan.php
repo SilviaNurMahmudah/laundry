@@ -94,7 +94,7 @@ if (!login_check()) {
                             <!----------------KONTEN------------------->
                             <?php
                             error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
-                            $kode=$nama=$nohp="";
+                            $kode=$nama=$nohp=$no="";
                             $no = $_GET["no"];
                             $insert = '1';  
                             if(($no != null || $no != "") && ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
@@ -104,6 +104,7 @@ if (!login_check()) {
                                 $kode = $fill["kode"];
                                 $nama = $fill["nama"];
                                 $nohp = $fill["nohp"];
+                                $no = $fill["no"];
                                 $insert = '3';
                             }
                         }
@@ -140,6 +141,14 @@ if (!login_check()) {
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6 col-xs-12" >
+                                        <label for="no" class="col-sm-3 control-label">Urut :</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="no" name="no" value="<?php echo $no; ?>" placeholder="Masukan No" maxlength="50" required>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <input type="hidden" class="form-control" id="insert" name="insert" value="<?php echo $insert;?>" maxlength="1" >
                             </div>
@@ -155,6 +164,7 @@ if (!login_check()) {
                         $kode = mysqli_real_escape_string($conn, $_POST["kode"]);
                         $nama = mysqli_real_escape_string($conn, $_POST["nama"]);
                         $nohp = mysqli_real_escape_string($conn, $_POST["nohp"]);
+                        $no = mysqli_real_escape_string($conn, $_POST["no"]);
                         $insert = ($_POST["insert"]);
                         $sql="SELECT * from $tabeldatabase where kode='$kode'";
                         $result=mysqli_query($conn,$sql);
@@ -170,7 +180,7 @@ if (!login_check()) {
                             }
                         }
                         else if(($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
-                           $sql2 = "INSERT INTO $tabeldatabase VALUES('$kode','$nama','$nohp','')";
+                           $sql2 = "INSERT INTO $tabeldatabase VALUES('$kode','$nama','$nohp','$no')";
                            if(mysqli_query($conn, $sql2)){
                             echo "<script type='text/javascript'>  alert('Berhasil, Data telah disimpan!'); </script>";
                             echo "<script type='text/javascript'>window.location = '$forwardpage''.php';</script>";
