@@ -94,7 +94,7 @@ if (!login_check()) {
                             <!----------------KONTEN------------------->
                             <?php
                             error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
-                            $kode=$nama=$nohp=$no="";
+                            $kode=$nama=$nohp=$no;
                             $no = $_GET["no"];
                             $insert = '1';  
                             if(($no != null || $no != "") && ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){

@@ -94,7 +94,7 @@ if (!login_check()) {
 
                 <!-- BOX INFORMASI -->
                 <?php
-                if ($_SESSION['level'] == 'admin') {
+                if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') {
 
                 } else { ?>
                     <div class="callout callout-danger">
@@ -103,7 +103,7 @@ if (!login_check()) {
                     </div>
                 <?php } ?>
 
-                <?php if ($_SESSION['level'] == 'admin') { ?>
+                <?php if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
                     <?php
                     $sqla="SELECT no, COUNT( * ) AS totaldata FROM $forward";
                     $hasila=mysqli_query($conn,$sqla);
@@ -175,12 +175,12 @@ if (!login_check()) {
                                              <td><?php  echo mysqli_real_escape_string($conn, $fill['nama']); ?></td>
                                              <td><?php  echo mysqli_real_escape_string($conn, number_format(($fill['biaya']), $decimal, $a_decimal, $thousand).',-'.' / '.$fill['satuan']); ?></td>
                                              <td>
-                                                <?php if ($_SESSION['level'] == 'admin') { ?>
+                                                <?php if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
                                                  <button type="button" class="btn btn-success btn-xs btn-flat" onclick="window.location.href='add_<?php echo $halaman;?>.php?no=<?php  echo $fill['no']; ?>'">Edit</button>
                                              <?php } else {
 
                                              }?>
-                                             <?php if ($_SESSION['level'] == 'admin') { ?>
+                                             <?php if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
                                                  <button type="button" class="btn btn-danger btn-xs btn-flat" onclick="window.location.href='component/delete/delete_master.php?no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Hapus</button>
                                              <?php } else {}?>
                                          </td>

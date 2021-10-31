@@ -76,7 +76,7 @@ div class="wrapper">
                     </script>
 
                     <!-- BOX INFORMASI -->
-                    <?php if ($_SESSION['level'] == 'admin') { ?>  
+                    <?php if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>  
                         <!-- KONTEN BODY AWAL -->
                         <div class="box box-default">
                             <div class="box-header with-border">
@@ -91,7 +91,7 @@ div class="wrapper">
                                     $kode=$nama=$biaya="";
                                     $no = $_GET["no"];
                                     $insert = '1';
-                                    if(($no != null || $no != "") && ($_SESSION['level'] == 'admin')){
+                                    if(($no != null || $no != "") && ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
                                         $sql="select * from $tabeldatabase where no='$no'";
                                         $hasil2 = mysqli_query($conn,$sql);
                                         while ($fill = mysqli_fetch_assoc($hasil2)){
@@ -150,7 +150,7 @@ div class="wrapper">
                                             $sql="select * from $tabeldatabase where kode='$kode'";
                                             $result=mysqli_query($conn,$sql);
                                             if(mysqli_num_rows($result)>0){
-                                                if( $_SESSION['level'] == 'admin'){
+                                                if( $_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir'){
                                                     $sql1 = "update $tabeldatabase set nama='$nama', biaya='$biaya' where kode='$kode'";
                                                     $updatean = mysqli_query($conn, $sql1);
                                                     echo "<script type='text/javascript'>  alert('Berhasil, Data telah diupdate!'); </script>";
@@ -159,7 +159,7 @@ div class="wrapper">
                                                     echo "<script type='text/javascript'>  alert('Gagal, Data gagal diupdate!'); </script>";
                                                     echo "<script type='text/javascript'>window.location = '$forwardpage'.php'';</script>";
                                                 }
-                                            }else if(( $_SESSION['level'] == 'admin')){
+                                            }else if(( $_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
                                                 $sql2 = "INSERT INTO $tabeldatabase values( '$kode','$nama','$biaya','')";
                                                 if(mysqli_query($conn, $sql2)){
                                                     echo "<script type='text/javascript'>  alert('Berhasil, Data telah disimpan!'); </script>";

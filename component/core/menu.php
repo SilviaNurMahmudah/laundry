@@ -61,7 +61,7 @@ include "configuration/config_chmod.php";
             <?php }else{
 
             }
-            if($_SESSION['level'] == 'admin'){ ?>
+            if($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir'){ ?>
                 <li class="treeview">
                     <a href="#"> <i class="glyphicon glyphicon-pushpin"></i> <span>Jenis Layanan</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i> </span> </a>
                     <ul class="treeview-menu">
@@ -73,7 +73,7 @@ include "configuration/config_chmod.php";
                         </li>
                     </ul>
                 </li>
-            <?php }else{
+            <?php }else {
 
             }
             if($_SESSION['level'] == 'admin'){ ?>
@@ -81,11 +81,11 @@ include "configuration/config_chmod.php";
                     <a href="#"> <i class="glyphicon glyphicon-stats"></i> <span>Laporan</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i> </span> </a>
   					<ul class="treeview-menu">
                         <li>
-                            <a href="report_trx.php"><i class="fa fa-circle-o"></i>Transaksi Jual</a>
+                            <a href="laporan.php"><i class="fa fa-circle-o"></i>Laporan Transaksi / Order</a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="report_revenue.php"><i class="fa fa-circle-o"></i>Pendapatan</a>
-                        </li>
+                        </li> -->
                     </ul>
                 </li>
             <?php }else{
