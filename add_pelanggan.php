@@ -173,20 +173,20 @@ if (!login_check()) {
                                 $sql1 = "UPDATE $tabeldatabase set nama='$nama',nohp='$nohp' where kode='$kode'";
                                 $updatean = mysqli_query($conn, $sql1);
                                 echo "<script type='text/javascript'>  alert('Berhasil, Data telah diupdate!'); </script>";
-                                echo "<script type='text/javascript'>window.location = '$forwardpage''.php';</script>";
+                                echo "<script type='text/javascript'>window.location = '$forwardpage.php';</script>";
                             }else{
                                 echo "<script type='text/javascript'>  alert('Gagal, Data gagal diupdate!'); </script>";
-                                echo "<script type='text/javascript'>window.location = '$forwardpage''.php';</script>";
+                                echo "<script type='text/javascript'>window.location = '$forwardpage.php';</script>";
                             }
                         }
                         else if(($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
                            $sql2 = "INSERT INTO $tabeldatabase VALUES('$kode','$nama','$nohp','$no')";
                            if(mysqli_query($conn, $sql2)){
                             echo "<script type='text/javascript'>  alert('Berhasil, Data telah disimpan!'); </script>";
-                            echo "<script type='text/javascript'>window.location = '$forwardpage''.php';</script>";
+                            echo "<script type='text/javascript'>window.location = '$forwardpage.php';</script>";
                         }else{
                             echo "<script type='text/javascript'>  alert('Gagal, Data gagal disimpan!'); </script>";
-                            echo "<script type='text/javascript'>window.location = '$forwardpage''.php';</script>";
+                            echo "<script type='text/javascript'>window.location = '$forwardpage.php';</script>";
                         }
                     }
                 } ?>

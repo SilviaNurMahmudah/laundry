@@ -140,7 +140,7 @@ if (!login_check()) {
                       echo "<script type='text/javascript'>  alert('Berhasil, Data berhasil diupdate!');</script>";
                     }else{ ?>
                       <body onload="setTimeout(function() { document.frm1.submit() }, 10)">
-                        <form action="<?php echo $baseurl; ?>/ayalaundry/<?php echo $forwardpage;?>" name="frm1" method="post">
+                        <form action="<?php echo $baseurl; ?>/ayalaundry/<?php echo $forwardpage;?>.php" name="frm1" method="post">
                           <input type="hidden" name="hapusberhasil" value="3" />
                         </form>
                         <?php
