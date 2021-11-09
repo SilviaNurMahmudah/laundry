@@ -128,7 +128,7 @@ if (!login_check()) {
                     <th>Total Pembayaran</th>
                     <th>Deadline</th>
                     <th>Status</th>
-                    <?php	if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
+                    <?php if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
                       <th class="no-print">Opsi</th>
                     <?php }else{
 
@@ -139,7 +139,7 @@ if (!login_check()) {
                 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
                 $search = $_POST['search'];
                 if ($search != null || $search != "") {        
-                  if ($_SERVER["REQUEST_METHOD"] == "POST") {          		
+                  if ($_SERVER["REQUEST_METHOD"] == "POST") {             
                     if(isset($_POST['search'])){
                       $query1="SELECT *,bayar.nota as nota FROM  $forward inner join pelanggan on pelanggan.kode = bayar.pelanggan where bayar.nota like '%$search%' or bayar.tgldeadline like '%$search%' or bayar.status like '%$search%' or pelanggan.nama like '%$search%' order by bayar.no limit $rpp";
                       $hasil = mysqli_query($conn,$query1);
@@ -160,7 +160,13 @@ if (!login_check()) {
                             <td><?php  echo mysqli_real_escape_string($conn,$namapelanggan); ?></td>
                             <td><?php  echo mysqli_real_escape_string($conn,number_format($fill['total'], $decimal, $a_decimal, $thousand).',-'); ?></td>
                             <td><?php  echo mysqli_real_escape_string($conn,$fill['tgldeadline'].' / '.date('H:i', strtotime($fill['jamdeadline']))); ?></td>
-                            <?php if($fill['status'] == 'proses'){ ?>
+                            <?php if($fill['status'] == 'Proses'){ ?>
+                              <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
+                            <?php }else if($fill['status'] == 'Dicuci'){ ?>
+                              <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
+                            <?php }else if($fill['status'] == 'Dikeringkan'){ ?>
+                              <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
+                            <?php }else if($fill['status'] == 'Digosok'){ ?>
                               <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
                             <?php }else if($fill['status'] == 'selesai'){ ?>
                               <td> <span class="label label-primary"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
@@ -172,9 +178,15 @@ if (!login_check()) {
                               <td> <span class="label label-danger"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
                             <?php } ?>
                             <td>
-                              <?php	if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
+                              <?php if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
                                 <?php if($fill['status']=='proses'){?>
                                   <button type="button" class="btn btn-success btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'selesai'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Selesai</button>
+                                <?php }else if($fill['status'] == 'Dicuci'){ ?>
+                                  <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
+                                <?php }else if($fill['status'] == 'Dikeringkan'){ ?>
+                                  <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
+                                <?php }else if($fill['status'] == 'Digosok'){ ?>
+                                 <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
                                 <?php }else if($fill['status']=='selesai'){ ?>
                                   <button type="button" class="btn btn-danger btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'lunas'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Lunas</button>
                                 <?php }else if($fill['status']=='Diterima'){ ?>
@@ -186,7 +198,7 @@ if (!login_check()) {
 
                               }?>
                             </td>
-                            </tr><?php ;}	?>
+                            </tr><?php ;} ?>
                           </tbody></table>
                           <div align="right"><?php if($tcount>=$rpp){ echo paginate_one($reload, $page, $tpages);}else{} ?></div>
                           <?php
@@ -213,6 +225,12 @@ if (!login_check()) {
                             <td><?php  echo mysqli_real_escape_string($conn, $fill['tgldeadline'].' / '.date('H:i', strtotime($fill['jamdeadline']))); ?></td>
                             <?php if($fill['status'] == 'proses'){ ?>
                               <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn, $fill['status']); ?></span></td>
+                            <?php }else if($fill['status'] == 'Dicuci'){ ?>
+                              <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
+                            <?php }else if($fill['status'] == 'Dikeringkan'){ ?>
+                              <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
+                            <?php }else if($fill['status'] == 'Digosok'){ ?>
+                              <td> <span class="label label-warning"><?php  echo mysqli_real_escape_string($conn,$fill['status']); ?></span></td>
                             <?php }else if($fill['status'] == 'selesai'){ ?>
                               <td> <span class="label label-primary"><?php  echo mysqli_real_escape_string($conn, $fill['status']); ?></span></td>
                             <?php }else if($fill['status'] == 'Diterima'){ ?>
@@ -223,14 +241,21 @@ if (!login_check()) {
                               <td> <span class="label label-danger"><?php  echo mysqli_real_escape_string($conn, $fill['status']); ?></span></td>
                             <?php } ?>
                             <td>
-                              <?php	if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
+                              <?php if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir') { ?>
                                 <?php if($fill['status']=='proses'){?>
-                                  <button type="button" class="btn btn-success btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'selesai'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Selesai</button>
+                                  <button type="button" class="btn btn-success btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'Dicuci'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Dicuci</button>
                                 <?php }else if($fill['status']=='selesai'){ ?>
                                   <button type="button" class="btn btn-danger btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'lunas'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Lunas</button>
                                 <?php }else if($fill['status']=='Diterima'){ ?>
                                   <button type="button" class="btn btn-warning btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'proses'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Proses</button>
+                                <?php }else if($fill['status']=='Dicuci'){ ?>
+                                  <button type="button" class="btn btn-warning btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'Dikeringkan'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Dikeringkan</button>
+                                <?php }else if($fill['status']=='Dikeringkan'){ ?>
+                                  <button type="button" class="btn btn-warning btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'Digosok'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Digosok</button>
+                                <?php }else if($fill['status']=='Digosok'){ ?>
+                                  <button type="button" class="btn btn-warning btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='component/setting/status_master.php?status=<?php echo 'selesai'.'&';?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo $forwardpage; ?>.php'">Selesai</button>
                                 <?php } ?>
+
                                 <button type="button" class="btn btn-primary btn-xs no-print btn-flat" style="width:55px" onclick="window.open('cetak_nota.php?nota=<?php  echo $fill['nota']; ?>')">Cetak</button>
                                 <button type="button" class="btn btn-info btn-xs no-print btn-flat" style="width:55px" onclick="window.location.href='order_detail.php?id=1&trx=1&nota=<?php  echo $fill['nota']; ?>'">Detail</button>
                               <?php } else {}?>

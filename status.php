@@ -37,18 +37,28 @@ include "configuration/config_connect.php" ;
   $statusa = $userRow['status'];
 
   if ($statusa=="selesai"){
-    $status="Siap Diambil";
+    $status="Selesai, Siap Diambil";
     $color="33C4FF";
   }else if($statusa=="proses") {
-    $status="Masih Dikerjakan";
+    $status="proses";
     $color="FF7A33";
   }else if($statusa=="lunas") {
-    $status="Telah Diambil";
+    $status="Lunas, Telah Diambil";
     $color="4BB543";
   } else if($statusa=="Diterima") {
     $status="Diterima";
     $color="086FF1";
-  } 
+  }else if($statusa=="Dicuci") {
+    $status="Masih Dicuci";
+    $color="FF7A33";
+  }else if($statusa=="Dikeringkan") {
+    $status="Masih Dikeringkan";
+    $color="FF7A33";
+  }else if($statusa=="Digosok") {
+    $status="Masih Digosok";
+    $color="FF7A33";
+  }
+  
 
   $karSql = "SELECT nama FROM pelanggan INNER JOIN bayar ON pelanggan.kode=bayar.pelanggan WHERE bayar.nota='$fnota'";
   $karQry = mysqli_query($conn, $karSql)  or die ("Query penjualan salah : ".mysqli_error());
