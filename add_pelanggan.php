@@ -141,14 +141,7 @@ if (!login_check()) {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6 col-xs-12" >
-                                        <label for="no" class="col-sm-3 control-label">Urut :</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control" id="no" name="no" value="<?php echo $no; ?>" placeholder="Masukan No" maxlength="50" required>
-                                        </div>
-                                    </div>
-                                </div>
+                                <input type="hidden" class="form-control" id="no" name="no" value="<?php echo $no; ?>" placeholder="Masukan No" maxlength="50" required>
 
                                 <input type="hidden" class="form-control" id="insert" name="insert" value="<?php echo $insert;?>" maxlength="1" >
                             </div>

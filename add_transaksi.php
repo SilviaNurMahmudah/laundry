@@ -66,9 +66,16 @@ if (!login_check()) { ?>
                 var jumlah = $("#jumlah").val();
                 var hargaakhir = $("#hargaakhir").val();
                 var datatotal = $("#datatotal").val();
-                //alert("Produk : "+nama+"\nTelah berhasil ditambahkan!");
-                $.post("add_transaksi.php", { kode: kode, barang: barang, nama: nama, hargajual: hargajual, hargabeli: hargabeli, jumlah: jumlah, hargaakhir: hargaakhir, datatotal: datatotal}, function(data) {
-                });
+
+                var tglmasuk = $("#tglmasuk").val();
+                var jammasuk = $("#jammasuk").val();
+                var tgldeadline = $("#tgldeadline").val();
+                var jamdeadline = $("#jamdeadline").val();
+                var catatan = $("#catatan").val();
+
+                $.post("add_transaksi.php", { kode: kode, barang: barang, nama: nama, hargajual: hargajual, hargabeli: hargabeli, jumlah: jumlah, hargaakhir: hargaakhir, datatotal: datatotal, tglmasuk: tglmasuk, jammasuk: jammasuk, tgldeadline: tglddeadline, jamdeadline: jam deadline,
+                 catatan: catatan}, function(data) {
+                 });
               }
             </script>
 
@@ -126,38 +133,39 @@ if (!login_check()) { ?>
               $insert = '1';
 
               if(($no != null || $no != "") && ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
-               $sql="select * from $tabeldatabase where kode='$kode'";
-               $hasil2 = mysqli_query($conn,$sql);
-               while ($fill = mysqli_fetch_assoc($hasil2)){
-                $kode = $fill["kode"];
-                $nama = $fill["nama"];
-                $insert = '3';
+                $sql="select * from $tabeldatabase where kode='$kode'";
+                $hasil2 = mysqli_query($conn,$sql);
+                while ($fill = mysqli_fetch_assoc($hasil2)){
+                  $kode = $fill["kode"];
+                  $nama = $fill["nama"];
+                  $insert = '3';
+                }
+              } ?>
+              <?php
+              if($kode == null || $kode == ""){
+                $sqle="SELECT SUM(hargaakhir) as data FROM transaksimasuk WHERE nota=".autoNumber()."";
+                $hasile=mysqli_query($conn,$sqle);
+                $row=mysqli_fetch_assoc($hasile);
+                $datatotal=$row['data'];
+
+                $sqle="SELECT SUM(biayaakhir) as data FROM transaksimasuk WHERE nota=".autoNumber()."";
+                $hasile=mysqli_query($conn,$sqle);
+                $row=mysqli_fetch_assoc($hasile);
+                $databelitotal=$row['data'];
+              }else{
+                $sqle="SELECT SUM(hargaakhir) as data FROM transaksimasuk WHERE nota='$kode'";
+                $hasile=mysqli_query($conn,$sqle);
+                $row=mysqli_fetch_assoc($hasile);
+                $datatotal=$row['data'];
+
+                $sqle="SELECT SUM(biayaakhir) as data FROM transaksimasuk WHERE nota='$kode'";
+                $hasile=mysqli_query($conn,$sqle);
+                $row=mysqli_fetch_assoc($hasile);
+                $databelitotal=$row['data'];
               }
-            } ?>
-            <?php
-            if($kode == null || $kode == ""){
-              $sqle="SELECT SUM(hargaakhir) as data FROM transaksimasuk WHERE nota=".autoNumber()."";
-              $hasile=mysqli_query($conn,$sqle);
-              $row=mysqli_fetch_assoc($hasile);
-              $datatotal=$row['data'];
-
-              $sqle="SELECT SUM(biayaakhir) as data FROM transaksimasuk WHERE nota=".autoNumber()."";
-              $hasile=mysqli_query($conn,$sqle);
-              $row=mysqli_fetch_assoc($hasile);
-              $databelitotal=$row['data'];
-            }else{
-              $sqle="SELECT SUM(hargaakhir) as data FROM transaksimasuk WHERE nota='$kode'";
-              $hasile=mysqli_query($conn,$sqle);
-              $row=mysqli_fetch_assoc($hasile);
-              $datatotal=$row['data'];
-
-              $sqle="SELECT SUM(biayaakhir) as data FROM transaksimasuk WHERE nota='$kode'";
-              $hasile=mysqli_query($conn,$sqle);
-              $row=mysqli_fetch_assoc($hasile);
-              $databelitotal=$row['data'];
-            }
-            if(isset($_POST["tambah"])){
-              if($_SERVER["REQUEST_METHOD"] == "POST"){
+              if(isset($_POST["simpan"])){
+               if($_SERVER["REQUEST_METHOD"] == "POST"){
+              //bayar
                 $kode = mysqli_real_escape_string($conn,$_POST["kode"]);
                 $layanan = mysqli_real_escape_string($conn,$_POST["layanan"]);
                 $nama = mysqli_real_escape_string($conn,$_POST["nama"]);
@@ -169,347 +177,258 @@ if (!login_check()) { ?>
                 $sql="select * from $tabeldatabase where nota='$kode' and kode='$layanan'";
                 $result=mysqli_query($conn,$sql);
 
-                if(mysqli_num_rows($result)>0){
-                  echo "<script type='text/javascript'>  alert('Layanan sudah diinputkan, silakan hapus dahulu untuk merubah!');</script>";
+              //transaksi
+                $kode = mysqli_real_escape_string($conn,$_POST["kode"]);
+                $tglnota = mysqli_real_escape_string($conn,$_POST["tglnota"]);
+                $pelanggan = mysqli_real_escape_string($conn,$_POST["pelanggan"]);
+                if($pelanggan == null || $pelanggan == ""){
+                  $pelanggan = mysqli_real_escape_string('1');
+                }else{
+                  $pelanggan = mysqli_real_escape_string($conn,$_POST["pelanggan"]);
                 }
-                else if(($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')&&($jumlah > 0)){
+                $tgldeadline = mysqli_real_escape_string($conn,$_POST["tgldeadline"]);
+                $jamdeadline = mysqli_real_escape_string($conn,$_POST["jamdeadline"]);
+                $catatan = mysqli_real_escape_string($conn,$_POST["catatan"]);
+                $jammasuk = date("G:H:i");
+                $insert = ($_POST["insert"]);
+
+                $sql="select * from bayar where nota='$kode'";
+                $result=mysqli_query($conn,$sql);
+
+                if(mysqli_num_rows($result)>0){
+
+                  echo "<script type='text/javascript'>  alert('Data tidak bisa diubah!');</script>";
+                }
+                else if(($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
                   $sql2 = "INSERT INTO $tabeldatabase VALUES('$kode','$layanan','$nama','$biaya', '$jumlah','$hargaakhir','$biayaakhir','')";
                   $insertan = mysqli_query($conn, $sql2);
-                }else{
-                  echo "<script type='text/javascript'>  alert('Gagal, Jumlah tidak boleh kosong!');</script>";
+                  $sql3 = "INSERT INTO bayar VALUES('$kode','$tglnota','$jammasuk','$pelanggan','$hargaakhir','$tgldeadline','$jamdeadline','Diterima','$catatan','')";
+                  $insertan = mysqli_query($conn, $sql3);
+                  ?>
+                  <script type="text/javascript">
+                    window.onload = function() {
+                      var win = window.open('print_one.php?nota=<?php echo $kode;?>','Cetak',' menubar=0, resizable=0,dependent=0,status=0,width=260,height=400,left=10,top=10','_blank');
+                      if (win) {
+                        alert('Berhasil, Data telah disimpan!');
+                        win.focus();
+                        window.location = 'add_transaksi.php';
+                      } else {
+                        alert('Berhasil, Data telah disimpan!');
+                        window.location = 'order_data.php';
+                      }
+                    }
+                  </script>
+                <?php }else{
+                  echo "<script type='text/javascript'>  alert('Gagal, Data gagal disimpan! Pastikan pembayaran benar');</script>";
                 }
               }
             }
-            if(isset($_POST["simpan"])){
-             if($_SERVER["REQUEST_METHOD"] == "POST"){
+            if($kode == null || $kode == ""){
+              $sqle="SELECT SUM(hargaakhir) as data FROM transaksimasuk WHERE nota=".autoNumber()."";
+              $hasile=mysqli_query($conn,$sqle);
+              $row=mysqli_fetch_assoc($hasile);
+              $datatotal=$row['data'];
+            }else{
+              $sqle="SELECT SUM(hargaakhir) as data FROM transaksimasuk WHERE nota='$kode'";
+              $hasile=mysqli_query($conn,$sqle);
+              $row=mysqli_fetch_assoc($hasile);
+              $datatotal=$row['data'];
+            } ?>
 
-              $kode = mysqli_real_escape_string($conn,$_POST["kode"]);
-              $tglnota = mysqli_real_escape_string($conn,$_POST["tglnota"]);
-              $pelanggan = mysqli_real_escape_string($conn,$_POST["pelanggan"]);
-              if($pelanggan == null || $pelanggan == ""){
-                $pelanggan = mysqli_real_escape_string('1');
-              }else{
-                $pelanggan = mysqli_real_escape_string($conn,$_POST["pelanggan"]);
-              }
-              $tgldeadline = mysqli_real_escape_string($conn,$_POST["tgldeadline"]);
-              $jamdeadline = mysqli_real_escape_string($conn,$_POST["jamdeadline"]);
-              $catatan = mysqli_real_escape_string($conn,$_POST["catatan"]);
-              $jammasuk = date("G:H:i");
-              $insert = ($_POST["insert"]);
+            <div id="main">
+             <div class="container-fluid">
+              <form class="form-horizontal" method="post" action="add_<?php echo $halaman; ?>.php" id="Myform" class="form-user">
+                <div class="box-body">
+                  <div class="row">
+                    <div class="col-md-8"  style="margin-left:-15px">
+                      <div class="box-body">
 
-              $sql="select * from bayar where nota='$kode'";
-              $result=mysqli_query($conn,$sql);
-
-              if(mysqli_num_rows($result)>0){
-
-                echo "<script type='text/javascript'>  alert('Data tidak bisa diubah!');</script>";
-              }
-              else if(($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'kasir')){
-               $sql2 = "INSERT INTO bayar VALUES('$kode','$tglnota','$jammasuk','$pelanggan','$datatotal','$tgldeadline','$jamdeadline','Diterima','$catatan','')";
-               $insertan = mysqli_query($conn, $sql2);
-               ?>
-               <script type="text/javascript">
-                window.onload = function() {
-                  var win = window.open('print_one.php?nota=<?php echo $kode;?>','Cetak',' menubar=0, resizable=0,dependent=0,status=0,width=260,height=400,left=10,top=10','_blank');
-                  if (win) {
-                    alert('Berhasil, Data telah disimpan!');
-                    win.focus();
-                    window.location = 'add_transaksi.php';
-                  } else {
-                    alert('Silakan Allow Pop Up bila ingin mencetak!');
-                  }
-                }
-              </script>
-            <?php }else{
-              echo "<script type='text/javascript'>  alert('Gagal, Data gagal disimpan! Pastikan pembayaran benar');</script>";
-            }
-          }
-        }
-        if($kode == null || $kode == ""){
-          $sqle="SELECT SUM(hargaakhir) as data FROM transaksimasuk WHERE nota=".autoNumber()."";
-          $hasile=mysqli_query($conn,$sqle);
-          $row=mysqli_fetch_assoc($hasile);
-          $datatotal=$row['data'];
-        }else{
-          $sqle="SELECT SUM(hargaakhir) as data FROM transaksimasuk WHERE nota='$kode'";
-          $hasile=mysqli_query($conn,$sqle);
-          $row=mysqli_fetch_assoc($hasile);
-          $datatotal=$row['data'];
-        } ?>
-
-        <div id="main">
-         <div class="container-fluid">
-          <form class="form-horizontal" method="post" action="add_<?php echo $halaman; ?>.php" id="Myform" class="form-user">
-            <div class="box-body">
-              <div class="row">
-                <div class="col-md-4">
-                  <div class="box" style="background-color:#EEEEEE">
-                    <div class="box-body">
-                      <div class="row" >
-                       <div class="form-group col-md-12 col-xs-12" >
-                        <div class="col-sm-12" >
-                          Total
-                          <?php if($datatotal == "" || $datatotal == null){?>
-                            <h2 align="center" style="margin-top:0px;">Rp   <?php echo '0'.',-'; ?></h2>
-                          <?php }else{ ?>
-                            <h2 align="center" style="margin-top:0px;">Rp   <?php echo number_format($datatotal, $decimal, $a_decimal, $thousand).',-'; ?></h2>
-                          <?php } ?>
+                        <div class="col-sm-3">
+                          <label for="kode">Nota:</label>
+                          <input type="text" class="form-control" id="kode" name="kode" value="<?php echo autoNumber(); ?>" maxlength="50" readonly required>
                         </div>
+
+                        <div class="col-sm-6">
+                          <label for="usr">Pelanggan</label>
+                          <select class="form-control select2" style="width: 100%;" name="pelanggan" id="pelanggan">
+                            <option></option>
+                            <?php
+                            $sql=mysqli_query($conn,"select * from pelanggan");
+                            while ($row=mysqli_fetch_assoc($sql)){
+
+                              if ($pelanggan==$row['kode']){
+                                echo "<option value='".$row['kode']."' nama='".$row['nama']."' selected='selected'>".$row['nama'].", Kode: ".$row['kode']."</option>";
+                              }else{
+                                echo "<option value='".$row['kode']."' nama='".$row['nama']."' >".$row['nama'].", Kode: ".$row['kode']."</option>";
+                              }
+                            }
+                            ?>
+                          </select>
+                        </div>
+
+                        <div class="col-sm-3">
+                          <label for="kode">Tanggal:</label>
+                          <input type="text" class="form-control pull-right" id="datepicker2" name="tglnota" placeholder="Masukan Tanggal Nota" value="<?php echo $tglnota; ?>" >
+                        </div>
+
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-8"  style="margin-left:-25px">
-                <div class="box-body">
-
-                  <div class="col-sm-3">
-                    <label for="kode">Nota:</label>
-                    <input type="text" class="form-control" id="kode" name="kode" value="<?php echo autoNumber(); ?>" maxlength="50" readonly required>
+                    <input type="hidden" class="form-control" id="insert" name="insert" value="<?php echo $insert;?>" maxlength="1" >
                   </div>
 
-                  <div class="col-sm-3">
-                    <label for="kode">Tanggal:</label>
-                    <input type="text" class="form-control pull-right" id="datepicker2" name="tglnota" placeholder="Masukan Tanggal Nota" value="<?php echo $tglnota; ?>" >
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="box box-default">
+                        <div class="box-body">
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label for="usr">Nama Layanan</label>
+                              <input type="text" class="form-control" id="nama" name="nama" value="<?php echo $nama; ?>" readonly>
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="kode">Layanan:</label>
+                              <select class="form-control select2" style="width: 100%;" name="layanan" id="layanan">
+                                <option></option>
+                                <?php
+                                $sql=mysqli_query($conn,"select * from jenis");
+                                while ($row=mysqli_fetch_assoc($sql)){
+                                  if ($layanan==$row['kode']){
+                                    echo "<option value='".$row['kode']."' nama='".$row['nama']."' biaya='".$row['biaya']."' selected='selected'>".$row['nama']." , Kode: ".$row['kode']."</option>";
+                                  }else{
+                                    echo "<option value='".$row['kode']."' nama='".$row['nama']."'  biaya='".$row['biaya']."' >".$row['nama']." , Kode: ".$row['kode']."</option>";
+                                  }
+                                }
+                                ?>
+                              </select>
+                            </div>
+                            
+                          </div>                    
+                        </div>                  
+                      </div>                
+                    </div>              
                   </div>
 
-                  <div class="col-sm-6">
-                    <label for="kode">Layanan:</label>
-                    <select class="form-control select2" style="width: 100%;" name="layanan" id="layanan">
-                      <option></option>
-                      <?php
-                      $sql=mysqli_query($conn,"select * from jenis");
-                      while ($row=mysqli_fetch_assoc($sql)){
-                        if ($layanan==$row['kode']){
-                          echo "<option value='".$row['kode']."' nama='".$row['nama']."' biaya='".$row['biaya']."' selected='selected'>".$row['nama']." , Kode: ".$row['kode']."</option>";
-                        }else{
-                          echo "<option value='".$row['kode']."' nama='".$row['nama']."'  biaya='".$row['biaya']."' >".$row['nama']." , Kode: ".$row['kode']."</option>";
-                        }
-                      }
-                      ?>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <input type="hidden" class="form-control" id="insert" name="insert" value="<?php echo $insert;?>" maxlength="1" >
-            </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="box box-default">
+                        <div class="box-body">
+                          <div class="row" >
 
-            <div class="row">
-              <div class="col-md-12">
-                <div class="box box-default">
-                  <div class="box-body">
-                    <div class="row" >
+                            <script>
+                             function sum() {
+                               var txtFirstNumberValue =  document.getElementById('jumlah').value
+                               var txtSecondNumberValue = document.getElementById('biaya').value;
+                               var result = parseFloat(txtFirstNumberValue) * parseFloat(txtSecondNumberValue);
+                               if (!isNaN(result)) {
+                                document.getElementById('hargaakhir').value = result;
+                              }
+                              if (!$(jumlah).val()){
+                               document.getElementById('hargaakhir').value = "0";
+                             }
+                             if (!$(hargajual).val()){
+                               document.getElementById('hargaakhir').value = "0";
+                             }
+                           }
+                         </script>
+                         <?php
+                         error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+                         ?>
+                         <div class="col-sm-2">
+                          <label for="usr">Biaya</label>
+                          <input type="text" class="form-control" id="biaya" name="biaya" value="<?php  echo $biaya; ?>" readonly>
+                        </div>
 
-                      <div class="col-sm-4">
-                        <label for="usr">Nama Layanan</label>
-                        <input type="text" class="form-control" id="nama" name="nama" value="<?php echo $nama; ?>" readonly>
+                        <div class="col-sm-2">
+                          <label for="usr">Jumlah (Kg)</label>
+                          <input type="text" class="form-control" id="jumlah" name="jumlah" value="<?php echo $jumlah; ?>" placeholder="0" onkeyup="sum();">
+                        </div>
+
+                        <div class="col-md-4">
+                          <div class="box" style="background-color:#EEEEEE">
+                            <div class="box-body">
+                              <div class="row" >
+                               <div class="form-group col-md-12 col-xs-12" >
+                                <div class="col-sm-12" >
+                                  <label for="usr">Total</label>
+                                  <input type="text" class="form-control" id="hargaakhir" name="hargaakhir" value="Rp. <?php echo $hargaakhir; ?>" readonly>                                
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
                       </div>
-
-                      <script>
-                       function sum() {
-                         var txtFirstNumberValue =  document.getElementById('jumlah').value
-                         var txtSecondNumberValue = document.getElementById('biaya').value;
-                         var result = parseFloat(txtFirstNumberValue) * parseFloat(txtSecondNumberValue);
-                         if (!isNaN(result)) {
-                          document.getElementById('hargaakhir').value = result;
-                        }
-                        if (!$(jumlah).val()){
-                         document.getElementById('hargaakhir').value = "0";
-                       }
-                       if (!$(hargajual).val()){
-                         document.getElementById('hargaakhir').value = "0";
-                       }
-                     }
-                   </script>
-                   <?php
-                   error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
-                   ?>
-                   <div class="col-sm-2">
-                    <label for="usr">Biaya</label>
-                    <input type="text" class="form-control" id="biaya" name="biaya" value="<?php  echo $biaya; ?>" readonly>
+                    </br>
                   </div>
-
-                  <div class="col-sm-2">
-                    <label for="usr">Jumlah (Kg)</label>
-                    <input type="text" class="form-control" id="jumlah" name="jumlah" value="<?php echo $jumlah; ?>" placeholder="0" onkeyup="sum();">
-                  </div>
-
-                  <div class="col-sm-2">
-                    <label for="usr">Harga Akhir</label>
-                    <input type="text" class="form-control" id="hargaakhir" name="hargaakhir" value="<?php echo $hargaakhir; ?>" readonly>
-                  </div>
-
-                  <div class="col-sm-2">
-                    <label for="usr" style="color:transparent">.</label>
-                    <button type="submit" class="btn btn-block pull-left btn-flat btn-success" name="tambah" onclick="SubmitForm()" >Tambah</button>
-                  </div>
-
                 </div>
-              </br>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="col-md-12">
-          <div class="box box-success">
-            <div class="box-header with-border">
-             <b>List Order</b>
-           </div>
+          <div class="row" >
+            <div class="col-md-12">
+              <div class="box box-solid" >
+                <div class="box-header with-border">
 
-           <?php
-           error_reporting(E_ALL ^ E_DEPRECATED);
-
-           $sql    = "select * from transaksimasuk where nota =".autoNumber()." order by no";
-           $result = mysqli_query($conn, $sql);
-           $rpp    = 15;
-           $reload = "$halaman"."?pagination=true";
-           $page   = intval(isset($_GET["page"]) ? $_GET["page"] : 0);
-
-
-
-           if ($page <= 0)
-             $page = 1;
-           $tcount  = mysqli_num_rows($result);
-           $tpages  = ($tcount) ? ceil($tcount / $rpp) : 1;
-           $count   = 0;
-           $i       = ($page - 1) * $rpp;
-           $no_urut = ($page - 1) * $rpp;
-           ?>
-           <div class="box-body table-responsive">
-            <table class="data table table-hover table-bordered">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Kode Layanan</th>
-                  <th>Nama Layanan</th>
-                  <th>Biaya</th>
-                  <th>Jumlah</th>
-                  <th>Biaya Akhir</th>
-                  <?php  if ($_SESSION['level'] == 'admin') { ?>
-                    <th>Opsi</th>
-                  <?php }else{} ?>
-                </tr>
-              </thead>
-              <?php
-              error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
-              while(($count<$rpp) && ($i<$tcount)) {
-               mysqli_data_seek($result,$i);
-               $fill = mysqli_fetch_array($result);
-               ?>
-               <tbody>
-                 <tr>
-                   <td><?php echo ++$no_urut;?></td>
-                   <td><?php  echo mysqli_real_escape_string($conn,$fill['kode']); ?></td>
-                   <td><?php  echo mysqli_real_escape_string($conn,$fill['nama']); ?></td>
-                   <td><?php  echo mysqli_real_escape_string($conn,number_format($fill['biaya'], $decimal, $a_decimal, $thousand).',-'); ?></td>
-                   <td><?php  echo mysqli_real_escape_string($conn,$fill['jumlah']); ?></td>
-                   <td><?php  echo mysqli_real_escape_string($conn,number_format(($fill['jumlah']*$fill['biaya']), $decimal, $a_decimal, $thousand).',-'); ?></td>
-                   <td>
-                     <?php  if ($_SESSION['level'] == 'admin') { ?>
-                       <button type="button" class="btn btn-danger btn-xs" onclick="window.location.href='component/delete/delete_produk.php?get=<?php echo '1'.'&'; ?>barang=<?php echo $fill['kode'].'&'; ?>jumlah=<?php echo $fill['jumlah'].'&'; ?>kode=<?php echo $kode.'&'; ?>no=<?php echo $fill['no'].'&'; ?>forward=<?php echo $forward.'&';?>forwardpage=<?php echo "add_".$forwardpage; ?>.php'">Hapus</button>
-                     <?php } else {}?>
-                   </td></tr>
-                   <?php
-                   $i++;
-                   $count++;
+                  <script>
+                   function sum2() {
+                     var txtFirstNumberValue =  document.getElementById('bayar').value
+                     var txtSecondNumberValue = document.getElementById('total').value;
+                     var result = parseFloat(txtFirstNumberValue) - parseFloat(txtSecondNumberValue);
+                     if (!isNaN(result)) {
+                      document.getElementById('kembalian').value = result;
+                    }
+                    if (!$(bayar).val()){
+                     document.getElementById('kembalian').value = "0";
+                   }
+                   if (!$(total).val()){
+                     document.getElementById('kembalian').value = "0";
+                   }
                  }
-
-                 ?>
-               </tbody></table>
-               <div align="right"><?php if($tcount>=$rpp){ echo paginate_one($reload, $page, $tpages);}else{ } ?>
-             </div>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
-
-   <div class="row" >
-    <div class="col-md-12">
-      <div class="box box-solid" >
-        <div class="box-header with-border">
-
-          <script>
-           function sum2() {
-             var txtFirstNumberValue =  document.getElementById('bayar').value
-             var txtSecondNumberValue = document.getElementById('total').value;
-             var result = parseFloat(txtFirstNumberValue) - parseFloat(txtSecondNumberValue);
-             if (!isNaN(result)) {
-              document.getElementById('kembalian').value = result;
-            }
-            if (!$(bayar).val()){
-             document.getElementById('kembalian').value = "0";
-           }
-           if (!$(total).val()){
-             document.getElementById('kembalian').value = "0";
-           }
-         }
-       </script>
+               </script>
 
 
-       <div class="col-sm-3">
-        <label for="usr">Pelanggan</label>
-        <select class="form-control select2" style="width: 100%;" name="pelanggan" id="pelanggan">
-          <option></option>
-          <?php
-          $sql=mysqli_query($conn,"select * from pelanggan");
-          while ($row=mysqli_fetch_assoc($sql)){
+               <div class="col-sm-2">
+                <label for="usr">Deadline</label>
+                <input type="text" class="form-control pull-right" id="datepicker3" name="tgldeadline" placeholder="<?php echo date("Y-m-d");?>" value="<?php echo $tgldeadline; ?>" >
+              </div>
 
-            if ($pelanggan==$row['kode']){
-              echo "<option value='".$row['kode']."' nama='".$row['nama']."' selected='selected'>".$row['nama'].", Kode: ".$row['kode']."</option>";
-            }else{
-              echo "<option value='".$row['kode']."' nama='".$row['nama']."' >".$row['nama'].", Kode: ".$row['kode']."</option>";
-            }
-          }
-          ?>
-        </select>
+
+              <div class="col-sm-2">
+                <label for="usr">Waktu</label>
+                <input type="text" class="form-control" id="jamdeadline" name="jamdeadline" value="<?php echo $jamdeadline; ?>" maxlength="5" placeholder="<?php echo date("H:i");?>">
+              </div>
+
+              <div class="col-sm-2">
+                <label for="usr">Catatan</label>
+                <input type="text" class="form-control" id="catatan" name="catatan" value="<?php echo $catatan; ?>" placeholder="Masukan Catatan" maxlength="255">
+              </div>
+
+              <input type="hidden" class="form-control" id="total" name="total" value="<?php echo $hargaakhir; ?>" maxlength="50" >
+
+
+              <div class="col-sm-3">
+                <label for="usr" style="color:transparent">.</label>
+                <button type="submit" class="btn btn-block pull-left btn-flat btn-success" name="simpan" onclick="SubmitForm()" >Proses Order</button>
+              </div>
+
+            </div>
+          </div>
+
+        </form>
       </div>
+      <script>
+        function myFunction() {
+          document.getElementById("Myform").submit();
+        }
+      </script>
 
-      <div class="col-sm-2">
-        <label for="usr">Deadline</label>
-        <input type="text" class="form-control pull-right" id="datepicker3" name="tgldeadline" placeholder="<?php echo date("Y-m-d");?>" value="<?php echo $tgldeadline; ?>" >
-      </div>
-
-
-      <div class="col-sm-2">
-        <label for="usr">Waktu</label>
-        <input type="text" class="form-control" id="jamdeadline" name="jamdeadline" value="<?php echo $jamdeadline; ?>" maxlength="5" placeholder="<?php echo date("H:i");?>">
-      </div>
-
-      <div class="col-sm-2">
-        <label for="usr">Catatan</label>
-        <input type="text" class="form-control" id="catatan" name="catatan" value="<?php echo $catatan; ?>" placeholder="Masukan Catatan" maxlength="255">
-      </div>
-
-      <input type="hidden" class="form-control" id="total" name="total" value="<?php echo $datatotal; ?>" maxlength="50" >
-
-
-      <div class="col-sm-3">
-        <label for="usr" style="color:transparent">.</label>
-        <button type="submit" class="btn btn-block pull-left btn-flat btn-success" name="simpan" onclick="document.getElementById('Myform').submit();" >Proses Order</button>
-      </div>
+      <!-- KONTEN BODY AKHIR -->
 
     </div>
   </div>
 
-
-</form>
-</div>
-<script>
-  function myFunction() {
-    document.getElementById("Myform").submit();
-  }
-</script>
-
-<!-- KONTEN BODY AKHIR -->
-
-</div>
-</div>
-
-<!-- /.box-body -->
+  <!-- /.box-body -->
 </div>
 </div>
 
